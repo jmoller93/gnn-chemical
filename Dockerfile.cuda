@@ -1,0 +1,50 @@
+# Use NVIDIA CUDA runtime as base image
+FROM nvidia/cuda:11.8-devel-ubuntu20.04
+
+# Set environment variables to avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-dev \
+    build-essential \
+    curl \
+    software-properties-common \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create symbolic link for python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies with CUDA-enabled PyTorch
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+COPY config.yaml .
+
+# Create output directory
+RUN mkdir -p outputs
+
+# Expose port for TensorBoard (optional)
+EXPOSE 6006
+
+# Default command (run training script)
+CMD ["python", "scripts/train.py"]
+
+# Alternative commands for different use cases:
+# CUDA Training: docker compose -f docker-compose.cuda.yml --profile cuda-train up train-cuda
+# CUDA TensorBoard: docker compose -f docker-compose.cuda.yml --profile cuda-tensorboard up tensorboard-cuda
+# CUDA Interactive: docker compose -f docker-compose.cuda.yml --profile cuda-dev run --rm dev-cuda 

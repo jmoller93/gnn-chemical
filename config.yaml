@@ -1,0 +1,39 @@
+# GNN Solubility Prediction Configuration
+
+# Data configuration
+data:
+  path: "solubility_classification.csv"
+  smiles_col: "SMILES"
+  target_col: "Solubility"
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+
+# Model configuration
+model:
+  hidden_channels: 64
+  num_layers: 2
+  dropout: 0.2
+  in_channels: 7  # Node feature dimension
+
+# Training configuration
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  max_epochs: 100
+  patience: 10
+
+# System configuration
+system:
+  num_workers: 4
+  accelerator: "auto"
+  devices: 1
+  precision: "16-mixed"
+
+# Output configuration
+output:
+  save_dir: "outputs"
+  model_name: "gnn_solubility"
+
+# Reproducibility
+seed: 42 

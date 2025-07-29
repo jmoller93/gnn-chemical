@@ -1,0 +1,226 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+conda-meta/
+
+# PyTorch / Machine Learning
+*.pth
+*.pt
+*.ckpt
+*.pkl
+*.pickle
+*.model
+*.weights
+*.h5
+*.hdf5
+*.pb
+*.onnx
+wandb/
+mlruns/
+.neptune/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Spyder
+.spyderproject
+.spyproject
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Project-specific outputs
+outputs/
+logs/
+checkpoints/
+runs/
+results/
+experiments/
+data/raw/
+data/processed/
+models/
+saved_models/
+
+# TensorBoard logs
+tensorboard_logs/
+tb_logs/
+
+# Hydra outputs
+.hydra/
+hydra_outputs/
+multirun/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# Environment variables
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Linux
+*~
+.directory
+.fuse_hidden*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+
+# Data files (uncomment if you don't want to track large datasets)
+# *.csv
+# *.tsv
+# *.json
+# *.xml
+# *.h5
+# *.hdf5
+# *.parquet
+
+# Compressed files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Documentation builds
+docs/_build/
+docs/build/
+site/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Node.js (if you have any frontend components)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local configuration files
+config.local.yaml
+config.local.yml
+local_config.*
+
+# Profiling data
+*.prof
+*.profile
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE and editor files
+*.sublime-project
+*.sublime-workspace
+.atom/
+.brackets.json
+
+# Git
+*.patch
+*.diff
+
+# Misc
+.coverage.*
+.pylintrc.local
+.bandit
+.flake8.local 

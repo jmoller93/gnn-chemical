@@ -1,0 +1,73 @@
+services:
+  # Base CUDA service configuration
+  app-cuda: &app-cuda-base
+    build:
+      context: .
+      dockerfile: Dockerfile.cuda
+    image: gnn-solubility:cuda
+    volumes:
+      - ./outputs:/app/outputs
+      - ./solubility_classification.csv:/app/solubility_classification.csv
+      - .:/app/src  # Mount source for development (optional)
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=all
+    working_dir: /app
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # CUDA-enabled training service
+  train-cuda:
+    <<: *app-cuda-base
+    command: python scripts/train.py
+    profiles:
+      - cuda-train
+
+  # CUDA-enabled TensorBoard service
+  tensorboard-cuda:
+    <<: *app-cuda-base
+    command: tensorboard --logdir=/app/outputs/logs --host=0.0.0.0 --port=6006
+    ports:
+      - "6006:6006"
+    profiles:
+      - cuda-tensorboard
+    depends_on:
+      - train-cuda
+
+  # CUDA-enabled inference service
+  inference-cuda:
+    <<: *app-cuda-base
+    command: python scripts/inference.py --help
+    profiles:
+      - cuda-inference
+
+  # CUDA-enabled interactive shell service
+  shell-cuda:
+    <<: *app-cuda-base
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    profiles:
+      - cuda-shell
+
+  # CUDA-enabled development service with live code mounting
+  dev-cuda:
+    <<: *app-cuda-base
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./outputs:/app/outputs
+      - ./solubility_classification.csv:/app/solubility_classification.csv
+      - .:/app  # Full source mount for development
+    profiles:
+      - cuda-dev 

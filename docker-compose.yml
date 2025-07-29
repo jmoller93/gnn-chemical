@@ -1,0 +1,67 @@
+services:
+  # Base service configuration
+  app: &app-base
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gnn-solubility:latest
+    volumes:
+      - ./outputs:/app/outputs
+      - ./solubility_classification.csv:/app/solubility_classification.csv
+      - .:/app/src  # Mount source for development (optional)
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    working_dir: /app
+
+  # Training service
+  train:
+    <<: *app-base
+    command: python scripts/train.py
+    profiles:
+      - train
+
+  # TensorBoard service for monitoring training
+  tensorboard:
+    <<: *app-base
+    command: tensorboard --logdir=/app/outputs/logs --host=0.0.0.0 --port=6006
+    ports:
+      - "6006:6006"
+    profiles:
+      - tensorboard
+    depends_on:
+      - train
+
+  # Inference service
+  inference:
+    <<: *app-base
+    command: python scripts/inference.py --help
+    profiles:
+      - inference
+
+  # Interactive shell service
+  shell:
+    <<: *app-base
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    profiles:
+      - shell
+
+  # Development service with live code mounting
+  dev:
+    <<: *app-base
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./outputs:/app/outputs
+      - ./solubility_classification.csv:/app/solubility_classification.csv
+      - .:/app  # Full source mount for development
+    profiles:
+      - dev
+
+# Named volumes (optional)
+volumes:
+  outputs:
+    driver: local 

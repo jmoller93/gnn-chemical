@@ -59,7 +59,7 @@ dev:
 train-cuda:
 	@echo "🚀 Starting GNN training (GPU accelerated)..."
 	@echo "⚡ Checking NVIDIA Docker support..."
-	@docker run --rm --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi || (echo "❌ NVIDIA Docker not available. Please install nvidia-docker2." && exit 1)
+	@docker run --rm --gpus all ubuntu:20.04 nvidia-smi || (echo "❌ NVIDIA Docker not available. Please install nvidia-docker2." && exit 1)
 	@mkdir -p outputs
 	docker compose -f docker-compose.cuda.yml --profile cuda-train up --build train-cuda
 
@@ -73,7 +73,7 @@ tensorboard-cuda:
 dev-cuda:
 	@echo "🛠️ Opening development shell with GPU access..."
 	@echo "⚡ Checking NVIDIA Docker support..."
-	@docker run --rm --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi || (echo "❌ NVIDIA Docker not available. Please install nvidia-docker2." && exit 1)
+	@docker run --rm --gpus all ubuntu:20.04 nvidia-smi || (echo "❌ NVIDIA Docker not available. Please install nvidia-docker2." && exit 1)
 	docker compose -f docker-compose.cuda.yml --profile cuda-dev run --rm dev-cuda
 
 # Clean up Docker resources
@@ -93,7 +93,7 @@ test:
 test-cuda:
 	@echo "🧪 Running quick CUDA test..."
 	@echo "⚡ Checking NVIDIA Docker support..."
-	@docker run --rm --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi || (echo "❌ NVIDIA Docker not available. Please install nvidia-docker2." && exit 1)
+	@docker run --rm --gpus all ubuntu:20.04 nvidia-smi || (echo "❌ NVIDIA Docker not available. Please install nvidia-docker2." && exit 1)
 	@mkdir -p outputs
 	docker compose -f docker-compose.cuda.yml --profile cuda-train run --rm train-cuda python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA devices: {torch.cuda.device_count()}'); import sys; sys.path.append('/app'); from omegaconf import OmegaConf; cfg = OmegaConf.load('/app/config.yaml'); from src.model import SolubilityGNN; print('✅ CUDA Pipeline test passed!')"
 
@@ -113,4 +113,4 @@ inference-cuda:
 		docker compose -f docker-compose.cuda.yml --profile cuda-inference run --rm inference-cuda python scripts/inference.py $(ARGS); \
 	else \
 		docker compose -f docker-compose.cuda.yml --profile cuda-inference run --rm inference-cuda python scripts/inference.py --help; \
-	fi 
+	fi

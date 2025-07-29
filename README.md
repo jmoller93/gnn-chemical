@@ -9,6 +9,7 @@ chemical-gnn/
 ├── solubility_classification.csv    # Dataset (9,982 molecules)
 ├── requirements.txt                 # Python dependencies
 ├── config.yaml                      # Hydra configuration file
+├── .gitignore                       # Git ignore rules
 ├── src/                             # Core library code
 │   ├── __init__.py                  # Package initialization
 │   ├── model.py                     # GNN model with PyTorch Lightning
@@ -239,7 +240,7 @@ python scripts/train.py output.save_dir=experiments/run_001 output.model_name=gn
 
 ```yaml
 data:           # Data loading and preprocessing
-model:          # Model architecture parameters  
+model:          # Model architecture parameters
 training:       # Training hyperparameters
 system:         # System and hardware settings
 output:         # Output directories and naming
@@ -347,4 +348,4 @@ docker run --rm --gpus all nvidia/cuda:11.8-base-ubuntu20.04 nvidia-smi
 
 🚀 Ready to predict molecular solubility with Graph Neural Networks!
 ⚡ Use GPU acceleration for faster training!
-🔧 Use Hydra for flexible configuration management! 
+🔧 Use Hydra for flexible configuration management!

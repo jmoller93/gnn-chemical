@@ -116,7 +116,6 @@ hydra_outputs/
 multirun/
 
 # Docker
-.dockerignore
 docker-compose.override.yml
 .docker/
 
@@ -146,7 +145,7 @@ Thumbs.db
 Thumbs.db
 ehthumbs.db
 Desktop.ini
-$RECYCLE.BIN/
+$RECYCLE_BIN/
 *.cab
 *.msi
 *.msix
@@ -223,4 +222,4 @@ local_config.*
 .coverage.*
 .pylintrc.local
 .bandit
-.flake8.local 
+.flake8.local

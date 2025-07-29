@@ -1,0 +1,27 @@
+outputs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.git/
+.gitignore
+*.md
+.pytest_cache/
+.coverage
+.venv/
+venv/
+env/
+.env
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+# Don't copy CUDA files into regular builds
+Dockerfile.cuda
+docker-compose.cuda.yml

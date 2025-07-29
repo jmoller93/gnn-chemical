@@ -9,7 +9,7 @@ help:
 	@echo "CPU Commands:"
 	@echo "  make build        - Build the Docker image"
 	@echo "  make train        - Run training (CPU)"
-	@echo "  make tensorboard  - Start TensorBoard (visit http://localhost:6006)"
+	@echo "  make tensorboard  - Start TensorBoard for CPU training logs"
 	@echo "  make inference    - Show inference help (CPU)"
 	@echo "  make shell        - Open interactive shell"
 	@echo "  make dev          - Open development shell with live code mounting"
@@ -17,14 +17,18 @@ help:
 	@echo ""
 	@echo "GPU Commands (requires NVIDIA Docker):"
 	@echo "  make train-cuda        - Run training (GPU accelerated)"
-	@echo "  make tensorboard-cuda  - Start TensorBoard for CUDA training"
+	@echo "  make tensorboard-cuda  - Start TensorBoard for CUDA training logs"
 	@echo "  make inference-cuda    - Show inference help (GPU accelerated)"
 	@echo "  make dev-cuda          - Open development shell with GPU access"
+	@echo ""
+	@echo "TensorBoard Access:"
+	@echo "  After training, visit http://localhost:6006 to view logs"
+	@echo "  Use 'tensorboard' for CPU training logs, 'tensorboard-cuda' for GPU logs"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make build && make train-cuda"
 	@echo "  make inference-cuda ARGS='--checkpoint outputs/checkpoints/best.ckpt --smiles CCO'"
-	@echo "  make tensorboard-cuda  # In a separate terminal after CUDA training starts"
+	@echo "  make tensorboard-cuda  # View GPU training progress"
 
 # Build the Docker image
 build:
@@ -40,8 +44,9 @@ train:
 
 # Start TensorBoard
 tensorboard:
-	@echo "📈 Starting TensorBoard server..."
+	@echo "📈 Starting TensorBoard server for CPU training logs..."
 	@echo "🌐 Open http://localhost:6006 in your browser"
+	@echo "📁 Serving logs from: ./outputs/logs"
 	docker compose --profile tensorboard up tensorboard
 
 # Open interactive shell
@@ -65,8 +70,9 @@ train-cuda:
 
 # Start TensorBoard for CUDA training
 tensorboard-cuda:
-	@echo "📈 Starting TensorBoard server for CUDA training..."
+	@echo "📈 Starting TensorBoard server for CUDA training logs..."
 	@echo "🌐 Open http://localhost:6006 in your browser"
+	@echo "📁 Serving logs from: ./outputs/logs"
 	docker compose -f docker-compose.cuda.yml --profile cuda-tensorboard up tensorboard-cuda
 
 # Open CUDA development shell

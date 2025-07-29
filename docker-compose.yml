@@ -29,8 +29,6 @@ services:
       - "6006:6006"
     profiles:
       - tensorboard
-    depends_on:
-      - train
 
   # Inference service
   inference:
@@ -64,4 +62,4 @@ services:
 # Named volumes (optional)
 volumes:
   outputs:
-    driver: local 
+    driver: local

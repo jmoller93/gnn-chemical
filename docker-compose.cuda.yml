@@ -40,8 +40,6 @@ services:
       - "6006:6006"
     profiles:
       - cuda-tensorboard
-    depends_on:
-      - train-cuda
 
   # CUDA-enabled inference service
   inference-cuda:
@@ -70,4 +68,4 @@ services:
       - ./solubility_classification.csv:/app/solubility_classification.csv
       - .:/app  # Full source mount for development
     profiles:
-      - cuda-dev 
+      - cuda-dev

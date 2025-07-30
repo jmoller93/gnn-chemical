@@ -1,6 +1,6 @@
 # GNN Solubility Prediction - Docker Compose Commands
 
-.PHONY: help build train tensorboard inference shell dev clean train-cuda tensorboard-cuda inference-cuda dev-cuda
+.PHONY: help build train tensorboard inference shell dev clean train-cuda tensorboard-cuda inference-cuda dev-cuda check-port kill-tensorboard
 
 # Default target
 help:
@@ -24,11 +24,17 @@ help:
 	@echo "TensorBoard Access:"
 	@echo "  After training, visit http://localhost:6006 to view logs"
 	@echo "  Use 'tensorboard' for CPU training logs, 'tensorboard-cuda' for GPU logs"
+	@echo "  Both commands now use explicit port forwarding (-p 6006:6006)"
+	@echo ""
+	@echo "Port Management:"
+	@echo "  make check-port       - Check if port 6006 is available"
+	@echo "  make kill-tensorboard - Stop all running TensorBoard instances"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make build && make train-cuda"
 	@echo "  make inference-cuda ARGS='--checkpoint outputs/checkpoints/best.ckpt --smiles CCO'"
 	@echo "  make tensorboard-cuda  # View GPU training progress"
+	@echo "  make check-port && make tensorboard  # Check port before starting"
 
 # Build the Docker image
 build:
@@ -47,7 +53,10 @@ tensorboard:
 	@echo "📈 Starting TensorBoard server for CPU training logs..."
 	@echo "🌐 Open http://localhost:6006 in your browser"
 	@echo "📁 Serving logs from: ./outputs/logs"
-	docker compose --profile tensorboard up tensorboard
+	@echo "🔌 Using explicit port forwarding: -p 6006:6006"
+	@mkdir -p outputs/logs
+	docker run --rm -p 6006:6006 -v "$(PWD)/outputs:/app/outputs" gnn-solubility:latest \
+		tensorboard --logdir=/app/outputs/logs --host=0.0.0.0 --port=6006
 
 # Open interactive shell
 shell:
@@ -73,7 +82,10 @@ tensorboard-cuda:
 	@echo "📈 Starting TensorBoard server for CUDA training logs..."
 	@echo "🌐 Open http://localhost:6006 in your browser"
 	@echo "📁 Serving logs from: ./outputs/logs"
-	docker compose -f docker-compose.cuda.yml --profile cuda-tensorboard up tensorboard-cuda
+	@echo "🔌 Using explicit port forwarding: -p 6006:6006"
+	@mkdir -p outputs/logs
+	docker run --rm -p 6006:6006 -v "$(PWD)/outputs:/app/outputs" --gpus all gnn-solubility:cuda \
+		tensorboard --logdir=/app/outputs/logs --host=0.0.0.0 --port=6006
 
 # Open CUDA development shell
 dev-cuda:
@@ -120,3 +132,21 @@ inference-cuda:
 	else \
 		docker compose -f docker-compose.cuda.yml --profile cuda-inference run --rm inference-cuda python scripts/inference.py --help; \
 	fi
+
+# Port checking utilities
+check-port:
+	@echo "🔍 Checking if port 6006 is available..."
+	@if lsof -i :6006 >/dev/null 2>&1; then \
+		echo "⚠️  Port 6006 is already in use:"; \
+		lsof -i :6006; \
+		echo "💡 Use 'make kill-tensorboard' to stop existing TensorBoard instances"; \
+	else \
+		echo "✅ Port 6006 is available"; \
+	fi
+
+kill-tensorboard:
+	@echo "🛑 Stopping any running TensorBoard instances..."
+	@docker ps --filter "ancestor=gnn-solubility:latest" --filter "ancestor=gnn-solubility:cuda" --format "table {{.ID}}\t{{.Image}}\t{{.Command}}" | grep tensorboard | awk '{print $$1}' | xargs -r docker stop
+	@docker compose down --remove-orphans >/dev/null 2>&1 || true
+	@docker compose -f docker-compose.cuda.yml down --remove-orphans >/dev/null 2>&1 || true
+	@echo "✅ TensorBoard cleanup complete"
